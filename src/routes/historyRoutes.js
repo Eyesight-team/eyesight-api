@@ -1,9 +1,9 @@
 const express = require('express');
 const { verifyToken } = require('../middleware/authMiddleware');
-const { completeProfile } = require('../controllers/profileController');
+const { getHistory } = require('../controllers/historyController');
 
 const router = express.Router();
 
-router.post('/complete', verifyToken, completeProfile);
+router.get('/', verifyToken, getHistory);
 
 module.exports = router;

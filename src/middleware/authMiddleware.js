@@ -1,23 +1,30 @@
-const session = require('express-session');
-const passport = require('passport');
+const jwt = require('jsonwebtoken');
 
-const sessionMiddleware = session({
-  secret: process.env.SESSION_SECRET || 'your-secret-key',
-  resave: false,
-  saveUninitialized: false,
-});
-
-const initializePassport = (app) => {
-  app.use(sessionMiddleware); 
-  app.use(passport.initialize()); 
-  app.use(passport.session()); 
+// Generate JWT Token
+const generateToken = (user) => {
+  return jwt.sign(
+    { id: user.id, email: user.email },
+    process.env.JWT_SECRET,
+    { expiresIn: '1d' } 
+  );
 };
 
-const isAuthenticated = (req, res, next) => {
-  if (req.isAuthenticated()) {
-    return next();
+// Middleware to Verify JWT Token
+const verifyToken = (req, res, next) => {
+  const token = req.headers.authorization?.split(' ')[1]; 
+
+  if (!token) {
+    return res.status(401).json({ message: 'Authentication token missing or invalid' });
   }
-  return res.status(401).json({ message: 'Unauthorized' });
+
+  jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
+    if (err) {
+      return res.status(401).json({ message: 'Invalid or expired token' });
+    }
+
+    req.user = decoded;
+    next();
+  });
 };
 
-module.exports = { initializePassport, isAuthenticated };
+module.exports = { generateToken, verifyToken };

@@ -1,15 +1,29 @@
 const passport = require('passport');
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
 const FacebookStrategy = require('passport-facebook').Strategy;
+const firestore = require('../data/db'); 
+const { generateToken } = require('../middleware/authMiddleware');
 
-passport.serializeUser((user, done) => {
-  done(null, user);
-});
 
-passport.deserializeUser((user, done) => {
-  done(null, user);
-});
+const filterUser = async (userProfile) => {
+  const userRef = firestore.collection('users').doc(userProfile.id);
+  const userDoc = await userRef.get();
 
+  if (!userDoc.exists) {
+    const newUser = {
+      id: userProfile.id,
+      email: userProfile.email,
+      firstName: userProfile.firstName,
+      lastName: userProfile.lastName,
+      isProfileComplete: false, 
+    };
+
+    await userRef.set(newUser);
+    return newUser;
+  }
+
+  return userDoc.data(); 
+};
 
 // Google OAuth
 passport.use(
@@ -21,8 +35,16 @@ passport.use(
     },
     async (accessToken, refreshToken, profile, done) => {
       try {
-        const user = { id: profile.id, email: profile.emails[0].value, name: profile.displayName };
-        return done(null, user);
+        const userProfile = {
+          id: profile.id,
+          email: profile.emails[0].value,
+          firstName: profile.name.givenName,
+          lastName: profile.name.familyName,
+        };
+
+        const user = await filterUser(userProfile);
+        const token = generateToken(user);
+        return done(null, { user, token });
       } catch (error) {
         return done(error, null);
       }
@@ -42,14 +64,19 @@ passport.use(
     async (accessToken, refreshToken, profile, done) => {
       try {
         const email = profile.emails ? profile.emails[0].value : `${profile.id}@facebook.com`;
-        const name = `${profile.name.givenName} ${profile.name.familyName}`;
-        const user = {
+        const firstName = profile.name.givenName;
+        const lastName = profile.name.familyName;
+
+        const userProfile = {
           id: profile.id,
           email,
-          name,
+          firstName,
+          lastName,
         };
 
-        return done(null, user);
+        const user = await filterUser(userProfile);
+        const token = generateToken(user);
+        return done(null, { user, token });
       } catch (error) {
         return done(error, null);
       }

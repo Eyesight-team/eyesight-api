@@ -9,9 +9,20 @@ router.get('/google', passport.authenticate('google', { scope: ['profile', 'emai
 // Google OAuth callback
 router.get(
   '/google/callback',
-  passport.authenticate('google', { failureRedirect: '/' }),
+  passport.authenticate('google', { session: false }),
   (req, res) => {
-    res.json({ message: 'Google Login successful', user: req.user });
+    const { user, token } = req.user;
+
+    if (!user.isProfileComplete) {
+      res.json({
+        message: 'New user, complete the signup form',
+        redirectTo: '/profile/complete',
+        user,
+        token,
+      });
+    } else {
+      res.json({ message: 'Login successful', user, token });
+    }
   }
 );
 
@@ -21,20 +32,21 @@ router.get('/facebook', passport.authenticate('facebook', { scope: ['email'] }))
 // Facebook OAuth callback
 router.get(
   '/facebook/callback',
-  passport.authenticate('facebook', { failureRedirect: '/' }),
+  passport.authenticate('facebook', { session: false }),
   (req, res) => {
-    res.json({ message: 'Facebook Login successful', user: req.user });
+    const { user, token } = req.user;
+
+    if (!user.isProfileComplete) {
+      res.json({
+        message: 'New user, complete the signup form',
+        redirectTo: '/profile/complete',
+        user,
+        token,
+      });
+    } else {
+      res.json({ message: 'Login successful', user, token });
+    }
   }
 );
-
-// Logout
-router.get('/logout', (req, res) => {
-  req.logout((err) => {
-    if (err) {
-      return res.status(500).json({ message: 'Logout failed' });
-    }
-    res.json({ message: 'Logout successful' });
-  });
-});
 
 module.exports = router;

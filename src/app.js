@@ -2,30 +2,28 @@ require('dotenv').config();
 
 const express = require('express');
 const bodyParser = require('body-parser');
-const { initializePassport } = require('./middleware/authMiddleware');
 const authRoutes = require('./routes/authRoutes');
 const profileRoutes = require('./routes/profileRoutes');
+const historyRoutes = require('./routes/historyRoutes');
 
 const app = express();
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-initializePassport(app);
-
 app.use('/auth', authRoutes);
 app.use('/profile', profileRoutes);
+app.use('/history', historyRoutes);
 
 app.get('/', (req, res) => {
-  res.send('Welcome to Eyesight!');
+  res.send('Welcome to Eyesight API!');
 });
 
 app.use((req, res) => {
-  res.status(404).send('Route not found.');
+  res.status(404).json({ message: 'Route not found' });
 });
 
-const PORT = 3000;
-
+const PORT = process.env.PORT;
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
