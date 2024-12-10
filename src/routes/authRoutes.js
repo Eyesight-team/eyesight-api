@@ -16,7 +16,7 @@ router.get(
     if (!user.isProfileComplete) {
       res.json({
         message: 'New user, complete the signup form',
-        redirectTo: '/profile/complete',
+        redirectTo: '/profile/form',
         user,
         token,
       });
@@ -39,7 +39,7 @@ router.get(
     if (!user.isProfileComplete) {
       res.json({
         message: 'New user, complete the signup form',
-        redirectTo: '/profile/complete',
+        redirectTo: '/profile/form',
         user,
         token,
       });
