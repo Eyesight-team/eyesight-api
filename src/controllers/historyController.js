@@ -7,7 +7,7 @@ const dummy = [
   { id: '#R181242', name: 'Apel', testScore: 84, confidence: 90, status: 'Lulus', timestamp: '19-10-2024, 16:10 WIB' },
 ];
 
-// const firestore = require('../data/db');
+// const firestore = require('../config/firestore');
 
 const getHistory = async (req, res) => {
   try {

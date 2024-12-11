@@ -1,4 +1,4 @@
-const firestore = require('../data/db');
+const firestore = require('../config/firestore');
 
 const completeProfile = async (req, res) => {
   const {

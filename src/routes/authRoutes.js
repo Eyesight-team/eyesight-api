@@ -1,6 +1,6 @@
 const express = require('express');
-const passport = require('../auth/socialAuth');
-
+const passport = require('../auth/passport');
+const { verifyToken } = require('../middleware/authMiddleware');
 const router = express.Router();
 
 // Google OAuth login
@@ -48,5 +48,13 @@ router.get(
     }
   }
 );
+
+router.post('/logout', verifyToken, (req, res) => {
+  try {
+    res.status(200).json({ message: 'Logout successful' });
+  } catch (error) {
+    res.status(500).json({ message: 'Logout failed', error: error.message });
+  }
+});
 
 module.exports = router;

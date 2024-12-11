@@ -1,7 +1,7 @@
 const passport = require('passport');
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
 const FacebookStrategy = require('passport-facebook').Strategy;
-const firestore = require('../data/db'); 
+const firestore = require('../config/firestore'); 
 const { generateToken } = require('../middleware/authMiddleware');
 
 
@@ -15,6 +15,7 @@ const filterUser = async (userProfile) => {
       email: userProfile.email,
       firstName: userProfile.firstName,
       lastName: userProfile.lastName,
+      profilePicture: userProfile.profilePicture,
       isProfileComplete: false, 
     };
 
@@ -22,7 +23,12 @@ const filterUser = async (userProfile) => {
     return newUser;
   }
 
-  return userDoc.data(); 
+  const existingUser = userDoc.data();
+  if (existingUser.profilePicture !== userProfile.profilePicture) {
+    await userRef.update({ profilePicture: userProfile.profilePicture });
+  }
+
+  return existingUser;
 };
 
 // Google OAuth
@@ -40,6 +46,7 @@ passport.use(
           email: profile.emails[0].value,
           firstName: profile.name.givenName,
           lastName: profile.name.familyName,
+          profilePicture: profile.photos[0]?.value || '',
         };
 
         const user = await filterUser(userProfile);
@@ -66,12 +73,14 @@ passport.use(
         const email = profile.emails ? profile.emails[0].value : `${profile.id}@facebook.com`;
         const firstName = profile.name.givenName;
         const lastName = profile.name.familyName;
+        const profilePicture = profile.photos?.[0]?.value || '';
 
         const userProfile = {
           id: profile.id,
           email,
           firstName,
           lastName,
+          profilePicture,
         };
 
         const user = await filterUser(userProfile);
