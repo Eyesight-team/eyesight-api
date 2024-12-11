@@ -3,7 +3,7 @@
 ## Authentication
 
 ### Google OAuth
-### GET /auth/google
+### /auth/google
 `localhost:8080/auth/google`
 
 **Body:**
@@ -25,7 +25,7 @@
 <br>
 
 ### Facebook Oauth
-### GET /auth/facebook
+### /auth/facebook
 `localhost:8080/auth/facebook`
 
 **Body:**
