@@ -5,6 +5,7 @@ const bodyParser = require('body-parser');
 const authRoutes = require('./routes/authRoutes');
 const profileRoutes = require('./routes/profileRoutes');
 const historyRoutes = require('./routes/historyRoutes');
+const productRoutes = require('./routes/productRoutes');
 
 const app = express();
 
@@ -14,6 +15,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use('/auth', authRoutes);
 app.use('/profile', profileRoutes);
 app.use('/history', historyRoutes);
+app.use('/products', productRoutes);
 
 app.get('/', (req, res) => {
   res.send('Welcome to Eyesight API!');

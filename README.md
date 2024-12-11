@@ -96,3 +96,27 @@
 ```
 {"message":"History fetched successfully","summary":{"totalProducts": ,"passedProducts": ,"failedProducts": },"history":[{"id":"# ","name":" ","testScore": ,"confidence": ,"status":" ","timestamp":" "}]}
 ```
+
+<br>
+
+### Showing Products
+### GET /products
+`localhost:8080/products`
+
+**Body**
+
+```
+{
+  "products": [
+    {
+      "id": "productid",
+      "title": "product title",
+      "description": "product description",
+      "imageUrl": "https://storage.googleapis.com/<your-bucket>/<image-file>.jpg",
+      "marketplaceLink": "product-link",
+      "createdAt": " "
+    }
+  ]
+}
+
+```
