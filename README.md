@@ -1,122 +1,200 @@
-# Eyesight API Documentation
 
-## Authentication
+# Getting started
+
+```bash
+npm install
+cp .env.example .env
+npm run start
+```
+
+<br>
+
+## Eyesight API Documentation
 
 ### Google OAuth
-### /auth/google
-`localhost:8080/auth/google`
+### - Endpoint: ``` /auth/google ```
+### - Method: ``` GET ```
+### - Description: Triggers the Google OAuth login flow.
 
-**Body:**
-```
-{
-    "message": "New user, complete the signup form",
-    "redirectTo": "/profile/form",
-    "user": {
-        "id": "your_id",
-        "email": "yourmail@gmail.com",
-        "firstName": "First",
-        "lastName": "Last",
-        "isProfileComplete": false,
-        "profilePicture": " "
-    },
-    "token": " "
-}
-```
 <br>
 
-### Facebook Oauth
-### /auth/facebook
-`localhost:8080/auth/facebook`
+### Google OAuth Callback
+### - Endpoint: ``` /auth/google/calback ```
+### - Method: ``` GET ```
+### - Description: Handles the callback from Google OAuth login.
 
-**Body:**
+### - Response: 
+#### For new user:
 ```
 {
-    "message": "New user, complete the signup form",
-    "redirectTo": "/profile/form",
-    "user": {
-        "id": "your_id",
-        "email": "yourmail@facebook.com",
-        "firstName": "First",
-        "lastName": "Last",
-        "isProfileComplete": false,
-        "profilePicture": " "
-    },
-    "token": " "
+  "message": "New user, complete the signup form",
+  "redirectTo": "/profile/form",
+  "user": { ... },
+  "token": "<JWT_TOKEN>"
+}
+```
+#### For existing user:
+```
+{
+  "message": "Login successful",
+  "user": { ... },
+  "token": "<JWT_TOKEN>"
 }
 ```
 
 <br>
 
-### Complete the Profile Form
-### POST /profile/form
-`localhost:8080/profile/form`
+### Facebook OAuth
+### - Endpoint: ``` /auth/facebook ```
+### - Method: ``` GET ```
+### - Description: Triggers the Facebook OAuth login flow.
 
-**Body:**
+<br>
+
+### Facebook OAuth Callback
+### - Endpoint: ``` /auth/facebook/calback ```
+### - Method: ``` GET ```
+### - Description: Handles the callback from Facebook OAuth login.
+
+### - Response: 
+#### For new user:
 ```
-{"message":"Profile completed successfully."}
+{
+  "message": "New user, complete the signup form",
+  "redirectTo": "/profile/form",
+  "user": { ... },
+  "token": "<JWT_TOKEN>"
+}
+```
+#### For existing user:
+```
+{
+  "message": "Login successful",
+  "user": { ... },
+  "token": "<JWT_TOKEN>"
+}
+```
+
+<br>
+
+### Logout
+### - Endpoint: ``` /auth/logout```
+### - Method: ``` POST ```
+### - Header: ``` Authorization ``` : ``` Bearer <JWT_TOKEN> ```
+
+**Response:**
+```
+{
+  "message": "Logout successful"
+}
 ```
 
 <br>
 
 ### Showing User Profile
-### GET /profile
-`localhost:8080/profile`
+### - Endpoint: ``` /profile```
+### - Method: ``` GET ```
+### - Header: ``` Authorization ``` : ``` Bearer <JWT_TOKEN> ```
 
-**Body:**
+**Response:**
 ```
 {
-    "message": "Login successful",
-    "user": {
-        "id": "yourid",
-        "email": "yourmail@gmail.com",
-        "profilePicture": " ",
-        "firstName": "First",
-        "lastName": "Name",
-        "product": "Produk A",
-        "phone": "yourphone",
-        "dob": "yourdatepfbirth",
-        "companyAddress": "yourcompanyaddress",
-        "companyName": "yourcompanyname",
-        "hasDevice": true/false,
-        "jobDesc": " ",
-        "isProfileComplete": true
-    },
-    "token": " "
+    "id": " ",
+    "email": " ",
+    "profilePicture": " ",
+    "firstName": " ",
+    "lastName": " ",
+    "product": " ",
+    "phone": " ",
+    "dob": " ",
+    "companyAddress": " ",
+    "companyName": " ",
+    "hasDevice": ,
+    "jobDesc": " ",
+    "isProfileComplete": 
 }
 ```
 
 <br>
 
-### Showing History
-### GET /history
-`localhost:8080/history`
+### Complete profile form
+### - Endpoint: ``` /profile/form```
+### - Method: ``` POST ```
+### - Header: ``` Authorization ``` : ``` Bearer <JWT_TOKEN> ```
+### ``` Content-Type``` : ``` application/json ```
 
 **Body:**
-
 ```
-{"message":"History fetched successfully","summary":{"totalProducts": ,"passedProducts": ,"failedProducts": },"history":[{"id":"# ","name":" ","testScore": ,"confidence": ,"status":" ","timestamp":" "}]}
+{
+  "firstName": " ",
+  "lastName": " ",
+  "dob": " ",
+  "phone": " ",
+  "companyName": " ",
+  "companyAddress": " ",
+  "jobDesc": " ",
+  "hasDevice": ,
+  "product": " "
+}
+```
+
+**Response:**
+```
+{
+  "message": "Profile completed successfully."
+}
+
 ```
 
 <br>
 
-### Showing Products
-### GET /products
-`localhost:8080/products`
+### Get History
+### - Endpoint: ``` /history```
+### - Method: ``` GET```
+### - Header: ``` Authorization ``` : ``` Bearer <JWT_TOKEN> ```
 
-**Body**
+**Response:**
+```
+{
+  "message": " ",
+  "summary": {
+    "totalProducts": ,
+    "passedProducts": ,
+    "failedProducts": 
+  },
+  "history": [
+    {
+      "id": " ",
+      "name": " ",
+      "testScore":  ,
+      "confidence":  ,
+      "status": " ",
+      "timestamp": " "
+    },
+    ...
+  ]
+}
+```
+<br>
 
+### Get Products
+### - Endpoint: ``` /products```
+### - Method: ``` GET```
+### - Header: ``` Authorization ``` : ``` Bearer <JWT_TOKEN> ```
+
+**Response:**
 ```
 {
   "products": [
     {
-      "id": "productid",
-      "title": "product title",
-      "description": "product description",
-      "imageUrl": "https://storage.googleapis.com/<your-bucket>/<image-file>.jpg",
-      "marketplaceLink": "product-link",
+      "id": " ",
+      "title": " ",
+      "description": " ",
+      "imageUrl": " ",
+      "marketplaceLink": " ",
       "createdAt": " "
-    }
+    },
+    ...
   ]
 }
-
 ```

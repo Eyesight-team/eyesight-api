@@ -43,10 +43,10 @@ passport.use(
       try {
         const userProfile = {
           id: profile.id,
-          email: profile.emails[0].value,
-          firstName: profile.name.givenName,
-          lastName: profile.name.familyName,
-          profilePicture: profile.photos[0]?.value || '',
+          email: profile.emails ? profile.emails[0].value : `${profile.id}@provider.com`,
+          firstName: profile.name?.givenName || 'Unknown', 
+          lastName: profile.name?.familyName || '', 
+          profilePicture: profile.photos?.[0]?.value || '', 
         };
 
         const user = await filterUser(userProfile);
@@ -77,12 +77,12 @@ passport.use(
 
         const userProfile = {
           id: profile.id,
-          email,
-          firstName,
-          lastName,
-          profilePicture,
+          email: profile.emails ? profile.emails[0].value : `${profile.id}@provider.com`,
+          firstName: profile.name?.givenName || 'Unknown', 
+          lastName: profile.name?.familyName || '', 
+          profilePicture: profile.photos?.[0]?.value || '', 
         };
-
+        
         const user = await filterUser(userProfile);
         const token = generateToken(user);
         return done(null, { user, token });
